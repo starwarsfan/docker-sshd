@@ -11,8 +11,8 @@ ENV         OPENSSH_VERSION="${OPENSSH_VERSION}" \
             AUTHORIZED_KEYS_VOLUME="${CONF_VOLUME}/authorized_keys" \
             ROOT_KEYPAIR_LOGIN_ENABLED="false" \
             ROOT_LOGIN_UNLOCKED="false" \
-            USER_LOGIN_SHELL="/bin/bash" \
-            USER_LOGIN_SHELL_FALLBACK="/bin/ash"
+            USER_LOGIN_SHELL="/bin/zsh" \
+            USER_LOGIN_SHELL_FALLBACK="/bin/bash"
 
 RUN         apk add --upgrade --no-cache \
                     alpine-zsh-config \
@@ -33,8 +33,21 @@ RUN         apk add --upgrade --no-cache \
             && \
             rm -rf /var/cache/apk/*
 
-COPY        entrypoint.sh /
-COPY        conf.d/etc/ /etc/
+# Install oh-my-zsh
+RUN cd /root/ \
+ && sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+COPY entrypoint.sh /
+COPY root/ /root/
+COPY etc/motd /etc/
+
+# - Set permissions of oh-my-zsh directory
+# - Set zsh as shell for root
+# - Redirect /var/log/wtmp as it is not existing
+RUN chmod 755 /root/.oh-my-zsh \
+ && sed -i "s#/bin/ash#/bin/zsh#g" /etc/passwd \
+ && ln -s /dev/null /var/log/wtmp
+
 EXPOSE      22
 VOLUME      ["/etc/ssh"]
 ENTRYPOINT  ["/entrypoint.sh"]
