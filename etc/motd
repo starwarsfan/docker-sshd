@@ -1,0 +1,12 @@
+
+    Welcome on StarWarsFan's Alpine-based SSH container!
+
+    Shell: zsh + oh-my-zsh
+    Tools:
+     - git
+     - htop
+     - mc (Midnight Commander)
+     - mcedit (Midnight Commander Editor)
+     - nano (Editor)
+     - rsync
+
