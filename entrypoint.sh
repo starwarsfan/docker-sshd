@@ -157,6 +157,15 @@ if [[ -n "${SSH_USERS}" ]]; then
             log "        set mod 0600 on ${LOCAL_AUTHORIZED_KEYS}"
         fi
 
+        if [[ ! -e "/home/${USER_NAME}/.oh-my-zsh" ]] ; then
+            cp -r /root/.oh-my-zsh                   "/home/${USER_NAME}"
+            chown -R "${USER_UID}":"${USER_GROUP}"   "/home/${USER_NAME}/.oh-my-zsh"
+        fi
+        if [[ ! -e "/home/${USER_NAME}/.zshrc" ]] ; then
+            cp /root/.zshrc                          "/home/${USER_NAME}"
+            chown "${USER_UID}":"${USER_GROUP}"      "/home/${USER_NAME}/.zshrc"
+        fi
+
         printf "\n"
 
     done
