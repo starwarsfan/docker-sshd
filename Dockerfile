@@ -15,10 +15,17 @@ ENV         OPENSSH_VERSION="${OPENSSH_VERSION}" \
             USER_LOGIN_SHELL_FALLBACK="/bin/ash"
 
 RUN         apk add --upgrade --no-cache \
+                    alpine-zsh-config \
                     bash \
                     bash-completion \
+                    curl \
+                    git \
+                    htop \
+                    mc \
+                    nano \
                     rsync \
                     openssh=${OPENSSH_VERSION} \
+                    zsh \
             && \
             mkdir -p /root/.ssh "${CONF_VOLUME}" "${AUTHORIZED_KEYS_VOLUME}" \
             && \
