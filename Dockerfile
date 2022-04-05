@@ -1,7 +1,8 @@
 ARG         ALPINE_VERSION="${ALPINE_VERSION:-3.12}"
 FROM        alpine:"${ALPINE_VERSION}"
 
-LABEL       maintainer="https://github.com/hermsi1337"
+LABEL       maintainer="https://github.com/starwarsfan"
+LABEL       org.label-schema.description="Extended fork of Hermsi1337/docker-sshd"
 
 ARG         OPENSSH_VERSION="${OPENSSH_VERSION:-8.3_p1-r0}"
 ENV         CONF_VOLUME="/conf.d"
