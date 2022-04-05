@@ -1,10 +1,10 @@
-ARG         ALPINE_VERSION="${ALPINE_VERSION:-3.12}"
+ARG         ALPINE_VERSION="${ALPINE_VERSION:-edge}"
 FROM        alpine:"${ALPINE_VERSION}"
 
 LABEL       maintainer="https://github.com/starwarsfan"
 LABEL       org.label-schema.description="Extended fork of Hermsi1337/docker-sshd"
 
-ARG         OPENSSH_VERSION="${OPENSSH_VERSION:-8.3_p1-r0}"
+ARG         OPENSSH_VERSION="${OPENSSH_VERSION:-8.8_p1-r4}"
 ENV         CONF_VOLUME="/conf.d"
 ENV         OPENSSH_VERSION="${OPENSSH_VERSION}" \
             CACHED_SSH_DIRECTORY="${CONF_VOLUME}/ssh" \
