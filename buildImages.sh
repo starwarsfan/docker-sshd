@@ -17,14 +17,18 @@ _init
 
 helpMe() {
     echo "
-    Helper script to build alpine sshd image for amd64 and arm64.
+    Helper script to build Alpine sshd image for amd64 and arm64,
+    based on Alpine Edge.
 
     Usage:
     ${0} [options]
-    Optional parameters:
-    -a  Also build ARM images beside AMD64
-    -p  Publish image on DockerHub
-    -h  Show this help
+
+    Available options:
+    -a .. Also build ARM image beside AMD64
+    -n <name>
+       .. Name of the image. Default: ${IMAGE_NAME}
+    -p .. Push image to DockerHub
+    -h .. Show this help
     "
 }
 
@@ -49,7 +53,7 @@ getDigests() {
 }
 
 tagAlpineImages() {
-    info "Taging alpine linux images"
+    info "Taging Alpine Linux images"
     docker pull "${ALPINE_VERSION}@${DIGEST_AMD64}"
     docker pull "${ALPINE_VERSION}@${DIGEST_ARM64}"
     docker tag "${ALPINE_VERSION}@${DIGEST_AMD64}" "${ALPINE_VERSION}-amd64"
@@ -59,12 +63,12 @@ tagAlpineImages() {
 
 buildImage() {
     local _arch=$1
-    info "Building starwarsfan/alpine-sshd:manifest-${_arch}"
-    docker build -f "${_arch}.Dockerfile" -t "starwarsfan/alpine-sshd:manifest-${_arch}" .
+    info "Building ${IMAGE_NAME}:manifest-${_arch}"
+    docker build -f "${_arch}.Dockerfile" -t "${IMAGE_NAME}:manifest-${_arch}" .
     info " -> Done"
     if ${PUBLISH_IMAGE} ; then
-        info "Pushing starwarsfan/alpine-sshd:manifest-${_arch}"
-        docker push "starwarsfan/alpine-sshd:manifest-${_arch}"
+        info "Pushing ${IMAGE_NAME}:manifest-${_arch}"
+        docker push "${IMAGE_NAME}:manifest-${_arch}"
         info " -> Done"
     fi
 }
@@ -72,21 +76,21 @@ buildImage() {
 buildManifest() {
     local _arch1=$1
     local _arch2=$2
-    info "Building docker manifest for starwarsfan/alpine-sshd:${IMAGE_VERSION}"
+    info "Building Docker manifest for ${IMAGE_NAME}:${IMAGE_VERSION}"
     if [ -z "${_arch2}" ] ; then
         docker manifest create \
-            "starwarsfan/alpine-sshd:${IMAGE_VERSION}" \
-            --amend "starwarsfan/alpine-sshd:manifest-${_arch1}"
+            "${IMAGE_NAME}:${IMAGE_VERSION}" \
+            --amend "${IMAGE_NAME}:manifest-${_arch1}"
     else
         docker manifest create \
-            "starwarsfan/alpine-sshd:${IMAGE_VERSION}" \
-            --amend "starwarsfan/alpine-sshd:manifest-${_arch1}" \
-            --amend "starwarsfan/alpine-sshd:manifest-${_arch2}"
+            "${IMAGE_NAME}:${IMAGE_VERSION}" \
+            --amend "${IMAGE_NAME}:manifest-${_arch1}" \
+            --amend "${IMAGE_NAME}:manifest-${_arch2}"
     fi
     info " -> Done"
     if ${PUBLISH_IMAGE} ; then
-        info "Pushing docker manifest starwarsfan/alpine-sshd:${IMAGE_VERSION}"
-        docker manifest push "starwarsfan/alpine-sshd:${IMAGE_VERSION}"
+        info "Pushing Docker manifest ${IMAGE_NAME}:${IMAGE_VERSION}"
+        docker manifest push "${IMAGE_NAME}:${IMAGE_VERSION}"
         info " -> Done"
     fi
 }
@@ -95,13 +99,15 @@ PUBLISH_IMAGE=false
 BUILD_ARM_IMAGES=false
 PULL_ALPINE_IMAGE=true
 ALPINE_VERSION=alpine:edge
+IMAGE_NAME=starwarsfan/alpine-sshd
 DIGEST_AMD64=''
 DIGEST_ARM64=''
 IMAGE_VERSION=latest
 
-while getopts aph? option; do
+while getopts an:ph? option; do
     case ${option} in
         a) BUILD_ARM_IMAGES=true;;
+        n) IMAGE_NAME="${OPTARG}";;
         p) PUBLISH_IMAGE=true;;
         h|?) helpMe && exit 0;;
         *) die 90 "invalid option \"${OPTARG}\"";;
