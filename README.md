@@ -114,6 +114,27 @@ While beeing very slim and vanilla this image is still highly customizable.
 | ROOT_PASSWORD | any desired string | `undefined` | Set password for login as `root` (implies `ROOT_LOGIN_UNLOCKED`) |
 | USER_LOGIN_SHELL | any existing shell | `/bin/zsh` | Choose the desired default shell for all additional users. If the configured shell is not existent, a fallback to `/bin/bash` is applied |
 
+### How to build
+
+To build your own image version, you can use the helper script `buildImages.sh`. This script is able to handle the image build for _amd64_ and _arm64_. For reference here's the help output:
+
+```bash
+❯ ./buildImages.sh -h
+
+    Helper script to build Alpine sshd image for amd64 and arm64,
+    based on Alpine Edge.
+
+    Usage:
+    ./buildImages.sh [options]
+
+    Available options:
+    -a .. Also build ARM image beside AMD64
+    -n <name>
+       .. Name of the image. Default: starwarsfan/alpine-sshd
+    -p .. Push image to DockerHub
+    -h .. Show this help
+```
+
 ### Extending this image
 
 The original [hermsi image](https://github.com/Hermsi1337/docker-sshd) was designed to be as slim and vanilla as possible. This fork is already extended by some useful tools. If you need additional Tools like `netstat` , it's recommended to build your own image on top of `alpine-sshd`:
