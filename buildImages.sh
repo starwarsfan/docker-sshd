@@ -77,6 +77,7 @@ buildManifest() {
     local _arch1=$1
     local _arch2=$2
     info "Building Docker manifest for ${IMAGE_NAME}:${IMAGE_VERSION}"
+    docker manifest rm "${IMAGE_NAME}:${IMAGE_VERSION}" &>/dev/null || true
     if [ -z "${_arch2}" ] ; then
         docker manifest create \
             "${IMAGE_NAME}:${IMAGE_VERSION}" \
