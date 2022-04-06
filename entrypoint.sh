@@ -103,10 +103,12 @@ printf "\n"
 
 log "Applying configuration for additional users ..."
 
-if [[ ! -x "${USER_LOGIN_SHELL}" ]]; then
-    log "error" "    can not allocate desired shell '${USER_LOGIN_SHELL}', falling back to '${USER_LOGIN_SHELL_FALLBACK}' ..."
-    USER_LOGIN_SHELL="${USER_LOGIN_SHELL_FALLBACK}"
-fi
+# Currently not working, see https://github.com/alpinelinux/docker-alpine/issues/156
+#if [[ ! -x "${USER_LOGIN_SHELL}" ]]; then
+#    log "error" "    can not allocate desired shell '${USER_LOGIN_SHELL}', falling back to '${USER_LOGIN_SHELL_FALLBACK}' ..."
+#    USER_LOGIN_SHELL="${USER_LOGIN_SHELL_FALLBACK}"
+#fi
+USER_LOGIN_SHELL=${USER_LOGIN_SHELL:-/bin/zsh}
 
 log "    desired shell is ${USER_LOGIN_SHELL}"
 
