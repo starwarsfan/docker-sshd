@@ -43,21 +43,31 @@ pullAlpine() {
 }
 
 getDigests() {
-    info "Determining amd64 and arm64 image digests"
+    info "Getting manifest for ${ALPINE_VERSION}"
     docker manifest inspect "${ALPINE_VERSION}" > /tmp/alpineLinuxManifest.json
+    info " -> Done"
+
+    info "Determining image digests"
     DIGEST_AMD64=$(jq -j '.manifests[] | select(.platform.architecture == "amd64") | .digest' /tmp/alpineLinuxManifest.json)
     DIGEST_ARM64=$(jq -j '.manifests[] | select(.platform.architecture == "arm64") | .digest' /tmp/alpineLinuxManifest.json)
+    DIGEST_ARMv7=$(jq -j '.manifests[] | select((.platform.architecture == "arm") and (.platform.variant == "v7")) | .digest' /tmp/alpineLinuxManifest.json)
     info " -> amd64: ${DIGEST_AMD64}"
     info " -> arm64: ${DIGEST_ARM64}"
+    info " -> armv7: ${DIGEST_ARMv7}"
 #    rm -f /tmp/alpineLinuxManifest.json
 }
 
 tagAlpineImages() {
-    info "Taging Alpine Linux images"
+    info "Pulling dedicated architecture images"
     docker pull "${ALPINE_VERSION}@${DIGEST_AMD64}"
     docker pull "${ALPINE_VERSION}@${DIGEST_ARM64}"
+    docker pull "${ALPINE_VERSION}@${DIGEST_ARMv7}"
+    info " -> Done"
+
+    info "Taging images"
     docker tag "${ALPINE_VERSION}@${DIGEST_AMD64}" "${ALPINE_VERSION}-amd64"
     docker tag "${ALPINE_VERSION}@${DIGEST_ARM64}" "${ALPINE_VERSION}-arm64"
+    docker tag "${ALPINE_VERSION}@${DIGEST_ARMv7}" "${ALPINE_VERSION}-armv7"
     info " -> Done"
 }
 
@@ -76,6 +86,7 @@ buildImage() {
 buildManifest() {
     local _arch1=$1
     local _arch2=$2
+    local _arch3=$3
     info "Building Docker manifest for ${IMAGE_NAME}:${IMAGE_VERSION}"
     docker manifest rm "${IMAGE_NAME}:${IMAGE_VERSION}" &>/dev/null || true
     if [ -z "${_arch2}" ] ; then
@@ -86,7 +97,8 @@ buildManifest() {
         docker manifest create \
             "${IMAGE_NAME}:${IMAGE_VERSION}" \
             --amend "${IMAGE_NAME}:manifest-${_arch1}" \
-            --amend "${IMAGE_NAME}:manifest-${_arch2}"
+            --amend "${IMAGE_NAME}:manifest-${_arch2}" \
+            --amend "${IMAGE_NAME}:manifest-${_arch3}"
     fi
     info " -> Done"
     if ${PUBLISH_IMAGE} ; then
@@ -103,6 +115,7 @@ ALPINE_VERSION=alpine:edge
 IMAGE_NAME=starwarsfan/alpine-sshd
 DIGEST_AMD64=''
 DIGEST_ARM64=''
+DIGEST_ARMv7=''
 IMAGE_VERSION=latest
 
 while getopts an:ph? option; do
@@ -126,7 +139,8 @@ tagAlpineImages
 buildImage amd64
 if ${BUILD_ARM_IMAGES} ; then
     buildImage arm64
-    buildManifest amd64 arm64
+    buildImage armv7
+    buildManifest amd64 arm64 armv7
 else
     buildManifest amd64
 fi
