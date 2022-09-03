@@ -1,10 +1,3 @@
-[![Travis](https://shields.beevelop.com/travis/starwarsfan/docker-sshd.svg?style=flat-square)](https://travis-ci.com/starwarsfan/docker-sshd)
-[![Pulls](https://shields.beevelop.com/docker/pulls/starwarsfan/alpine-sshd.svg?style=flat-square)](https://hub.docker.com/r/starwarsfan/alpine-sshd/)
-[![Stars](https://shields.beevelop.com/docker/stars/starwarsfan/alpine-sshd.svg?style=flat-square)](https://hub.docker.com/r/starwarsfan/alpine-sshd/)
-[![Layers](https://shields.beevelop.com/docker/image/layers/starwarsfan/alpine-sshd/latest.svg?style=flat-square)](https://hub.docker.com/r/starwarsfan/alpine-sshd/)
-[![Size](https://shields.beevelop.com/docker/image/image-size/starwarsfan/alpine-sshd/latest.svg?style=flat-square)](https://hub.docker.com/r/starwarsfan/alpine-sshd/)
-[![Donate](https://img.shields.io/badge/Donate-PayPal-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=T85UYT37P3YNJ&source=url)
-
 ## Make your OpenSSH fly on Alpine
 
 ### Overview
