@@ -114,17 +114,17 @@ To build your own image version, you can use the helper script `buildImages.sh`.
 ```bash
 ❯ ./buildImages.sh -h
 
-    Helper script to build Alpine sshd image for amd64 and arm64,
+    Helper script to build Alpine sshd image for AMD64, ARMv7 and ARMv8,
     based on Alpine Edge.
 
     Usage:
     ./buildImages.sh [options]
-
-    Available options:
-    -a .. Also build ARM image beside AMD64
-    -n <name>
-       .. Name of the image. Default: starwarsfan/alpine-sshd
+    Optional parameters:
+    -7 .. Also build ARMv7 image beside AMD64
+    -8 .. Also build ARMv8 image beside AMD64
     -p .. Push image to DockerHub
+    -v <version>
+       .. Version with which the image should be tagged
     -h .. Show this help
 ```
 
